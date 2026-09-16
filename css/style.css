@@ -1,0 +1,634 @@
+/* css/style.css
+   A dark, utilitarian tool UI (not a marketing page) - clarity and finger-
+   sized tap targets matter more here than decoration. Breakpoint at
+   900px turns the side panel into a bottom drawer so the viewport stays
+   usable on a phone or small tablet. */
+
+:root {
+  --bg-0: #1b1b1e;
+  --bg-1: #232326;
+  --bg-2: #2b2b2f;
+  --bg-3: #34343a;
+  --border: #3d3d44;
+  --text-0: #ececef;
+  --text-1: #b7b7c0;
+  --text-2: #84848d;
+  --accent: #ff9f43;
+  --accent-dim: #7a5330;
+  --danger: #e5534b;
+  --ok: #3fb950;
+  --info: #4a9eff;
+  --radius: 6px;
+  --tap: 40px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg-0);
+  color: var(--text-0);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+  color: inherit;
+}
+
+#app {
+  height: 100%;
+}
+
+.bs-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------- menu bar */
+.bs-menubar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 40;
+}
+
+.menubar-logo {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  padding: 0 10px 0 2px;
+  white-space: nowrap;
+}
+
+.menubar-spacer {
+  flex: 1;
+}
+
+.menu-dropdown {
+  position: relative;
+}
+
+.menu-button {
+  background: transparent;
+  border: none;
+  color: var(--text-0);
+  padding: 8px 12px;
+  height: var(--tap);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.menu-button:hover {
+  background: var(--bg-3);
+}
+
+.menu-list {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  padding: 4px;
+  z-index: 50;
+}
+
+.menu-list.open {
+  display: flex;
+}
+
+.menu-item {
+  background: transparent;
+  border: none;
+  color: var(--text-0);
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.menu-item:hover {
+  background: var(--accent-dim);
+}
+
+.menu-separator {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 2px;
+}
+
+.mode-switch {
+  display: flex;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.mode-button {
+  background: transparent;
+  border: none;
+  color: var(--text-1);
+  padding: 8px 14px;
+  height: var(--tap);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.mode-button.active {
+  background: var(--accent);
+  color: #1b1204;
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------ layout */
+.bs-main-row {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.bs-toolbar {
+  width: 56px;
+  min-width: 56px;
+  background: var(--bg-1);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  overflow-y: auto;
+}
+
+.tool-button {
+  width: 100%;
+  min-height: var(--tap);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text-0);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 6px 2px;
+}
+
+.tool-button:hover {
+  border-color: var(--accent);
+}
+
+.tool-button.active {
+  background: var(--accent);
+  color: #1b1204;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.tool-separator {
+  width: 70%;
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+.bs-viewport {
+  flex: 1;
+  position: relative;
+  background: #000;
+  min-width: 0;
+}
+
+.bs-viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.select-box {
+  position: absolute;
+  border: 1px dashed var(--accent);
+  background: rgba(255, 159, 67, 0.12);
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* floating confirm/cancel/axis control for touch users during a G/R/S modal */
+.bs-modal-overlay {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  display: none;
+  gap: 6px;
+  background: rgba(30, 30, 34, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px;
+  z-index: 30;
+}
+
+.bs-modal-btn {
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--text-0);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bs-modal-confirm {
+  background: var(--ok);
+  color: #06210b;
+  border-color: var(--ok);
+}
+
+.bs-modal-cancel {
+  background: var(--danger);
+  color: #2a0a08;
+  border-color: var(--danger);
+}
+
+/* ----------------------------------------------------------- sidebar */
+.bs-sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: var(--bg-1);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.bs-drawer-handle {
+  display: none;
+}
+
+.bs-sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.bs-tab-button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-1);
+  padding: 10px 4px;
+  min-height: var(--tap);
+  cursor: pointer;
+  font-size: 12px;
+  border-bottom: 2px solid transparent;
+}
+
+.bs-tab-button.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.bs-sidebar-content {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.bs-panel {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.bs-panel-uv {
+  padding: 0;
+}
+
+.panel-header {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+
+.panel-empty {
+  color: var(--text-2);
+  font-size: 13px;
+  padding: 12px 2px;
+}
+
+/* --------------------------------------------------------- outliner */
+.outliner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.outliner-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  min-height: var(--tap);
+}
+
+.outliner-row:hover {
+  background: var(--bg-2);
+}
+
+.outliner-row.selected {
+  background: var(--accent-dim);
+}
+
+.outliner-row.active {
+  outline: 1px solid var(--accent);
+}
+
+.outliner-name {
+  flex: 1;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.outliner-vis-btn {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text-1);
+  border-radius: 4px;
+  font-size: 10px;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+/* -------------------------------------------------------- properties */
+.prop-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.prop-row > label {
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.prop-vector {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+}
+
+.prop-input {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text-0);
+  border-radius: 4px;
+  padding: 7px 8px;
+  font-size: 13px;
+  min-height: 34px;
+  width: 100%;
+}
+
+.prop-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.prop-input-color {
+  width: 100%;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-2);
+  padding: 2px;
+  cursor: pointer;
+}
+
+.prop-slider {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+/* --------------------------------------------------------- modifiers */
+.modifier-add-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.modifier-add-select {
+  flex: 1;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text-0);
+  border-radius: 4px;
+  padding: 0 8px;
+  min-height: var(--tap);
+  font-size: 13px;
+}
+
+.modifier-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.modifier-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.modifier-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.modifier-icon-btn {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  color: var(--text-1);
+  border-radius: 4px;
+  min-width: 28px;
+  min-height: 28px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.modifier-params {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modifier-param-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modifier-param-row > label {
+  width: 90px;
+  min-width: 90px;
+  font-size: 11px;
+  color: var(--text-2);
+  text-transform: capitalize;
+}
+
+.modifier-param-row select,
+.modifier-param-row input {
+  flex: 1;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  color: var(--text-0);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+/* -------------------------------------------------------------- uv */
+.uv-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+/* ---------------------------------------------------------- status bar */
+.bs-statusbar {
+  height: 30px;
+  min-height: 30px;
+  background: var(--bg-1);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  position: relative;
+  overflow: visible;
+}
+
+.bs-toast {
+  position: absolute;
+  bottom: 36px;
+  left: 10px;
+  right: 10px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--info);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  max-height: 40vh;
+  overflow-y: auto;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.bs-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bs-toast-warn {
+  border-left-color: var(--accent);
+}
+
+.bs-toast-error {
+  border-left-color: var(--danger);
+}
+
+/* ------------------------------------------------------- responsive */
+@media (max-width: 900px) {
+  .bs-sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    min-width: 0;
+    height: 46vh;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    transform: translateY(calc(100% - 40px));
+    transition: transform 0.25s ease;
+    z-index: 25;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .bs-root.bs-drawer-open .bs-sidebar {
+    transform: translateY(0);
+  }
+
+  .bs-drawer-handle {
+    display: block;
+    order: -1;
+    background: var(--bg-2);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-1);
+    padding: 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .bs-toolbar {
+    width: 48px;
+    min-width: 48px;
+  }
+
+  .bs-modal-overlay {
+    bottom: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .menubar-logo {
+    display: none;
+  }
+
+  .mode-button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
